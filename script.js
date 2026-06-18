@@ -259,7 +259,7 @@ function checkAnswer() {
 
   setTimeout(() => {
     nextQuestion();
-  }, 800);
+  }, 500);
 }
 
 function showFloatingResult(isCorrect) {
@@ -277,7 +277,7 @@ function showFloatingResult(isCorrect) {
 
   setTimeout(() => {
     el.remove();
-  }, 800);
+  }, 500);
 }
 
 function nextQuestion() {
@@ -344,7 +344,7 @@ function nextQuestion() {
     requestAnimationFrame(() => {
       app.classList.remove('fade-out');
     });
-  }, 120);
+  }, 300);
 }
 
 function showResults() {
