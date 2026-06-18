@@ -182,7 +182,7 @@ button:active {
 .floating.correct {
   color: #3ddc84;
 
-  left: -20px;
+  left: 10px;
 
   animation: correctSide 1.2s forwards;
 }
@@ -190,7 +190,7 @@ button:active {
 .floating.wrong {
   color: #ff4d4d;
 
-  right: -20px;
+  right: 10px;
 
   animation: wrongSide 1.2s forwards;
 }
@@ -232,72 +232,79 @@ button:active {
     opacity: 0;
     transform:
       translateY(-50%)
-      translateX(-40px)
-      rotate(-45deg);
+      translateX(0)
+      rotate(-45deg)
+      scale(.8);
   }
 
   15% {
     opacity: 1;
   }
 
-  30% {
+  25% {
     transform:
       translateY(-50%)
-      translateX(0)
-      rotate(-50deg);
+      translateX(-10px)
+      rotate(-45deg)
+      scale(1.15);
   }
 
   40% {
     transform:
       translateY(-50%)
-      translateX(-8px)
-      rotate(-40deg);
+      translateX(-5px)
+      rotate(-45deg)
+      scale(.95);
   }
 
   100% {
     opacity: 0;
-
     transform:
       translateY(-50%)
-      translateX(-80px)
-      rotate(-45deg);
+      translateX(-120px)
+      rotate(-45deg)
+      scale(1);
   }
 }
 
 @keyframes wrongSide {
+
   0% {
     opacity: 0;
     transform:
       translateY(-50%)
-      translateX(40px)
-      rotate(45deg);
+      translateX(0)
+      rotate(45deg)
+      scale(.8);
   }
 
   15% {
     opacity: 1;
   }
 
-  30% {
+  25% {
     transform:
       translateY(-50%)
-      translateX(0)
-      rotate(50deg);
+      translateX(10px)
+      rotate(45deg)
+      scale(1.15);
   }
 
   40% {
     transform:
       translateY(-50%)
-      translateX(8px)
-      rotate(40deg);
+      translateX(5px)
+      rotate(45deg)
+      scale(.95);
   }
 
   100% {
     opacity: 0;
-
     transform:
       translateY(-50%)
-      translateX(80px)
-      rotate(45deg);
+      translateX(120px)
+      rotate(45deg)
+      scale(1);
   }
 }
 
