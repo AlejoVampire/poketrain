@@ -9,6 +9,10 @@
   "orientation": "portrait",
   "background_color": "#0f1115",
   "theme_color": "#0f1115",
+  "categories": [
+    "entertainment",
+    "games"
+  ]
   "icons": [
     {
       "src": "icon-192.png",
