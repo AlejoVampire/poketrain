@@ -346,7 +346,7 @@ function nextQuestion() {
     requestAnimationFrame(() => {
       app.classList.remove('fade-out');
     });
-  }, 300);
+  }, 250);
 }
 
 function showResults() {
