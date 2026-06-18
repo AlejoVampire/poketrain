@@ -1,0 +1,294 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-family: Arial, sans-serif;
+
+  background: #0f1115;
+  color: #e6e6e6;
+}
+
+.card {
+  position: relative;
+  
+  width: min(90vw, 500px);
+
+  background: #171a21;
+
+  padding: 1.5rem;
+
+  border-radius: 16px;
+
+  text-align: center;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,.4);
+
+  animation: fadeIn .25s ease;
+}
+
+img {
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 1;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,.4));
+}
+
+h1, h2 {
+  color: #ffffff;
+}
+
+h1 {
+  margin-bottom: 1.5rem;
+}
+
+.quiz-title {
+  margin-bottom: 3rem;
+}
+
+h2 {
+  margin-top: 1rem;
+  margin-bottom: .75rem;
+}
+
+.generation-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: .5rem;
+  margin-bottom: 1rem;
+}
+
+.generation-option {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+}
+
+input[type="number"] {
+  width: 100%;
+  padding: 0.75rem;
+
+  border-radius: 10px;
+
+  border: 1px solid #2a2f3a;
+
+  font-size: 1rem;
+
+  margin-bottom: 0.5rem;
+
+  outline: none;
+
+  background: #0f1115;
+  color: #fff;
+}
+
+input[type="number"]:focus {
+  border-color: #4f7cff;
+}
+
+button {
+  width: 100%;
+
+  padding: .9rem;
+
+  border: none;
+
+  border-radius: 12px;
+
+  cursor: pointer;
+
+  font-size: 1rem;
+
+  background: #4f7cff;
+  color: white;
+
+  transition: all .2s ease;
+
+  margin-top: .5rem;
+}
+
+button + button {
+  margin-top: .75rem;
+}
+
+button:hover {
+  background: #3d66d6;
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+.view {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all .25s ease;
+}
+
+.view.enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.view.exit {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.stat-grid {
+  display: grid;
+  gap: .5rem;
+  margin: 1rem 0;
+  text-align: left;
+}
+
+.stat-grid div {
+  background: #0f1115;
+  padding: .6rem;
+  border-radius: 10px;
+}
+
+.hardest {
+  margin: 1rem 0;
+  color: #ffcc00;
+}
+
+.floating {
+  position: fixed;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  font-size: 2rem;
+
+  font-weight: bold;
+
+  pointer-events: none;
+
+  z-index: 9999;
+}
+
+.floating.correct {
+  color: #3ddc84;
+
+  top: 35%;
+
+  animation: correctFloat 1.2s forwards;
+}
+
+.floating.wrong {
+  color: #ff4d4d;
+
+  top: 55%;
+
+  animation: wrongFloat 1.2s forwards;
+}
+
+.question-exit {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all .25s ease;
+}
+
+.question-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.progress-info {
+  margin-bottom: .5rem;
+  font-size: .9rem;
+  color: #aaa;
+}
+
+.progress-bar {
+  height: 8px;
+  background: #0f1115;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #4f7cff;
+  transition: width .3s ease;
+}
+
+@keyframes correctFloat {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  30% {
+    transform: translateX(-50%) translateY(-10px) rotate(-3deg);
+  }
+
+  40% {
+    transform: translateX(-50%) translateY(-4px) rotate(3deg);
+  }
+
+  55% {
+    transform: translateX(-50%) translateY(-18px);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-120px);
+  }
+}
+
+@keyframes wrongFloat {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  30% {
+    transform: translateX(-50%) translateY(10px) rotate(3deg);
+  }
+
+  40% {
+    transform: translateX(-50%) translateY(4px) rotate(-3deg);
+  }
+
+  55% {
+    transform: translateX(-50%) translateY(18px);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(120px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
