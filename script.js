@@ -214,6 +214,7 @@ function startGame() {
         checkAnswer();
       }
     });
+  document.querySelector('#answer').focus();
   saveState(gameState);
   console.log('Game started:', gameState);
 }
@@ -341,6 +342,7 @@ function nextQuestion() {
           checkAnswer();
         }
       });
+    document.querySelector('#answer').focus();
     requestAnimationFrame(() => {
       app.classList.remove('fade-out');
     });
