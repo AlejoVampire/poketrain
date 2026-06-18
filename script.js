@@ -260,7 +260,7 @@ function checkAnswer() {
 
   setTimeout(() => {
     nextQuestion();
-  }, 1200);
+  }, 900);
 }
 
 function showFloatingResult(isCorrect) {
@@ -278,7 +278,7 @@ function showFloatingResult(isCorrect) {
 
   setTimeout(() => {
     el.remove();
-  }, 1200);
+  }, 900);
 }
 
 function nextQuestion() {
