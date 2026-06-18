@@ -257,10 +257,6 @@ function checkAnswer() {
   const card = document.querySelector('.card');
 
   card.classList.add('question-exit');
-
-  setTimeout(() => {
-    nextQuestion();
-  }, 1200);
 }
 
 function showFloatingResult(isCorrect) {
@@ -276,9 +272,10 @@ function showFloatingResult(isCorrect) {
 
   document.querySelector('.card').appendChild(el);
 
-  setTimeout(() => {
+  el.addEventListener('animationend', () => {
     el.remove();
-  }, 1200);
+    nextQuestion();
+  });
 }
 
 function nextQuestion() {
