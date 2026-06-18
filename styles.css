@@ -164,46 +164,46 @@ button:active {
 }
 
 .floating {
-  position: fixed;
+  position: absolute;
 
-  left: 50%;
+  top: 38%;
 
-  transform: translateX(-50%);
-
-  font-size: 2rem;
+  font-size: 2.4rem;
 
   font-weight: bold;
 
   pointer-events: none;
 
-  z-index: 9999;
+  z-index: 50;
+
+  opacity: 0;
 }
 
 .floating.correct {
   color: #3ddc84;
 
-  top: 35%;
+  left: -20px;
 
-  animation: correctFloat 1.2s forwards;
+  animation: correctSide 1.2s forwards;
 }
 
 .floating.wrong {
   color: #ff4d4d;
 
-  top: 55%;
+  right: -20px;
 
-  animation: wrongFloat 1.2s forwards;
+  animation: wrongSide 1.2s forwards;
 }
 
 .question-exit {
   opacity: 0;
-  transform: translateY(-10px);
+  transform: scale(.96);
   transition: all .25s ease;
 }
 
 .question-enter {
   opacity: 0;
-  transform: translateY(10px);
+  transform: scale(1.04);
 }
 
 .progress-info {
@@ -226,10 +226,14 @@ button:active {
   transition: width .3s ease;
 }
 
-@keyframes correctFloat {
+@keyframes correctSide {
+
   0% {
     opacity: 0;
-    transform: translateX(-50%) translateY(20px);
+    transform:
+      translateY(-50%)
+      translateX(-40px)
+      rotate(-45deg);
   }
 
   15% {
@@ -237,27 +241,36 @@ button:active {
   }
 
   30% {
-    transform: translateX(-50%) translateY(-10px) rotate(-3deg);
+    transform:
+      translateY(-50%)
+      translateX(0)
+      rotate(-50deg);
   }
 
   40% {
-    transform: translateX(-50%) translateY(-4px) rotate(3deg);
-  }
-
-  55% {
-    transform: translateX(-50%) translateY(-18px);
+    transform:
+      translateY(-50%)
+      translateX(-8px)
+      rotate(-40deg);
   }
 
   100% {
     opacity: 0;
-    transform: translateX(-50%) translateY(-120px);
+
+    transform:
+      translateY(-50%)
+      translateX(-80px)
+      rotate(-45deg);
   }
 }
 
-@keyframes wrongFloat {
+@keyframes wrongSide {
   0% {
     opacity: 0;
-    transform: translateX(-50%) translateY(-20px);
+    transform:
+      translateY(-50%)
+      translateX(40px)
+      rotate(45deg);
   }
 
   15% {
@@ -265,20 +278,26 @@ button:active {
   }
 
   30% {
-    transform: translateX(-50%) translateY(10px) rotate(3deg);
+    transform:
+      translateY(-50%)
+      translateX(0)
+      rotate(50deg);
   }
 
   40% {
-    transform: translateX(-50%) translateY(4px) rotate(-3deg);
-  }
-
-  55% {
-    transform: translateX(-50%) translateY(18px);
+    transform:
+      translateY(-50%)
+      translateX(8px)
+      rotate(40deg);
   }
 
   100% {
     opacity: 0;
-    transform: translateX(-50%) translateY(120px);
+
+    transform:
+      translateY(-50%)
+      translateX(80px)
+      rotate(45deg);
   }
 }
 
