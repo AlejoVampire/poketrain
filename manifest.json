@@ -1,11 +1,14 @@
 {
+  "id": "/poketrain/",
   "name": "Pokédex Training",
   "short_name": "Pokétrain",
-  "start_url": "./",
+  "description": "Entrena tu memoria de la Pokédex Nacional.",
+  "start_url": "/poketrain/",
+  "scope": "/poketrain/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#0f1115",
   "theme_color": "#0f1115",
-  "description": "Entrena tu memoria de la Pokédex Nacional.",
   "icons": [
     {
       "src": "icon-192.png",
