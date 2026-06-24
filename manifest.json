@@ -1,28 +1,25 @@
 {
-  "id": "./",
   "name": "Pokédex Training",
   "short_name": "Pokétrain",
-  "description": "Entrena tu memoria de la Pokédex Nacional.",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "./index.html",
   "display": "standalone",
-  "orientation": "portrait",
   "background_color": "#0f1115",
   "theme_color": "#0f1115",
-  "categories": [
-    "entertainment",
-    "games"
-  ],
+  "description": "Entrena tu memoria de la Pokédex Nacional.",
+  "orientation": "portrait",
+  "scope": "./",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "./icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "./icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }

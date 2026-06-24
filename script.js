@@ -1,49 +1,46 @@
-import { pokemonList } from './data/pokemon.js';
-import { renderMenu } from './components/menu.js';
-import { gameState } from './services/gameState.js';
-import { renderQuiz } from './components/quiz.js';
-import { saveState, loadState } from './services/gameState.js';
-let currentView = 'menu';
-const app = document.querySelector('#app');
+import { pokemonList } from "./data/pokemon.js";
+import { renderMenu } from "./components/menu.js";
+import { gameState, saveState, loadState } from "./services/gameState.js";
+import { renderQuiz } from "./components/quiz.js";
+let currentView = "menu";
+const app = document.querySelector("#app");
 
 function renderView() {
-  if (currentView === 'menu') {
+  if (currentView === "menu") {
     app.innerHTML = renderMenu();
 
     updateMaxQuestions();
 
-    document
-      .querySelectorAll('input[type="checkbox"]')
-      .forEach(cb => {
-        cb.addEventListener('change', updateMaxQuestions);
-      });
+    document.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+      cb.addEventListener("change", updateMaxQuestions);
+    });
 
     document
-      .querySelector('#question-count')
-      .addEventListener('input', updateMaxQuestions);
+      .querySelector("#question-count")
+      .addEventListener("input", updateMaxQuestions);
 
     attachMenuEvents();
   }
 
-  if (currentView === 'stats') {
+  if (currentView === "stats") {
     renderStats();
   }
 }
 
 function attachMenuEvents() {
-  const startBtn = document.querySelector('#start-button');
-  const statsBtn = document.querySelector('#stats-button');
+  const startBtn = document.querySelector("#start-button");
+  const statsBtn = document.querySelector("#stats-button");
 
   if (startBtn) {
     startBtn.onclick = () => {
-      currentView = 'quiz';
+      currentView = "quiz";
       startGame();
     };
   }
 
   if (statsBtn) {
     statsBtn.onclick = () => {
-      currentView = 'stats';
+      currentView = "stats";
       renderView();
     };
   }
@@ -58,15 +55,15 @@ function renderStats() {
   let hardest = null;
   let totalAnswered = 0;
 
-  Object.values(stats).forEach(s => {
-    totalAnswered += (s.correct || 0);
-    totalAnswered += (s.wrong || 0);
+  Object.values(stats).forEach((s) => {
+    totalAnswered += s.correct || 0;
+    totalAnswered += s.wrong || 0;
   });
 
   Object.entries(stats).forEach(([dex, s]) => {
     correct += s.correct || 0;
     wrong += s.wrong || 0;
-    totalAttempts += (s.correct + s.wrong);
+    totalAttempts += s.correct + s.wrong;
 
     const errorRate = s.wrong;
 
@@ -76,38 +73,34 @@ function renderStats() {
   });
   const generationStats = {};
   Object.entries(stats).forEach(([dex, s]) => {
-    const pokemon = pokemonList.find(
-      p => p.dex === Number(dex)
-    );
-  
+    const pokemon = pokemonList.find((p) => p.dex === Number(dex));
+
     if (!pokemon) return;
-  
+
     const gen = pokemon.gen;
-  
+
     if (!generationStats[gen]) {
       generationStats[gen] = {
         correct: 0,
-        total: 0
+        total: 0,
       };
     }
-  
+
     generationStats[gen].correct += s.correct;
     generationStats[gen].total += s.correct + s.wrong;
   });
 
   const generationHtml = Object.entries(generationStats)
-  .map(([gen, data]) => {
-    const accuracy = Math.round(
-      (data.correct / data.total) * 100
-    );
+    .map(([gen, data]) => {
+      const accuracy = Math.round((data.correct / data.total) * 100);
 
-    return `
+      return `
       <div>
         Gen ${gen}: ${accuracy}%
       </div>
     `;
-  })
-  .join('');
+    })
+    .join("");
 
   const accuracy = totalAttempts
     ? Math.round((correct / totalAttempts) * 100)
@@ -126,7 +119,7 @@ function renderStats() {
       </div>
 
       <p class="hardest">
-        🔥 Más difícil: #${hardest?.dex || '-'}
+        🔥 Más difícil: #${hardest?.dex || "-"}
       </p>
 
       <h2>Precisión por generación</h2>
@@ -140,8 +133,8 @@ function renderStats() {
     </div>
   `;
 
-  document.querySelector('#back-menu').onclick = () => {
-    currentView = 'menu';
+  document.querySelector("#back-menu").onclick = () => {
+    currentView = "menu";
     renderView();
   };
 }
@@ -151,7 +144,7 @@ function getSelectedGenerations() {
 
   const selected = [];
 
-  checkboxes.forEach(cb => {
+  checkboxes.forEach((cb) => {
     if (cb.checked) selected.push(Number(cb.value));
   });
 
@@ -159,7 +152,7 @@ function getSelectedGenerations() {
 }
 
 function getAvailablePokemon(selectedGens) {
-  return pokemonList.filter(p => selectedGens.includes(p.gen));
+  return pokemonList.filter((p) => selectedGens.includes(p.gen));
 }
 
 function updateMaxQuestions() {
@@ -167,8 +160,8 @@ function updateMaxQuestions() {
 
   const available = getAvailablePokemon(selectedGens);
 
-  const input = document.querySelector('#question-count');
-  const info = document.querySelector('#max-info');
+  const input = document.querySelector("#question-count");
+  const info = document.querySelector("#max-info");
 
   if (!input || !info) return;
 
@@ -183,18 +176,18 @@ function updateMaxQuestions() {
 
 function startGame() {
   const selectedGens = getSelectedGenerations();
-
   const available = getAvailablePokemon(selectedGens);
 
   const questionCount = Math.min(
-    Number(document.querySelector('#question-count').value) || 1,
-    available.length
+    Number(document.querySelector("#question-count").value) || 1,
+    available.length,
   );
 
   gameState.selectedGenerations = selectedGens;
   gameState.totalQuestions = questionCount;
   gameState.currentQuestion = 0;
   gameState.score = 0;
+  gameState.usedPokemon = [];
 
   const randomIndex = Math.floor(Math.random() * available.length);
   gameState.currentPokemon = available[randomIndex];
@@ -202,30 +195,42 @@ function startGame() {
   app.innerHTML = renderQuiz(
     gameState.currentPokemon,
     gameState.currentQuestion,
-    gameState.totalQuestions
+    gameState.totalQuestions,
   );
+
+  const answerInput = document.querySelector("#answer");
+  if (answerInput) {
+    answerInput.focus();
+    answerInput.addEventListener("keydown", handleEnterKey);
+  }
+
   document
-    .querySelector('#check-answer')
-    .addEventListener('click', checkAnswer);
-  document
-    .querySelector('#answer')
-    .addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        checkAnswer();
-      }
-    });
-  document.querySelector('#answer').focus();
-  saveState(gameState);
-  console.log('Game started:', gameState);
+    .querySelector("#check-answer")
+    ?.addEventListener("click", checkAnswer);
+}
+
+function handleEnterKey(e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    checkAnswer();
+  }
+}
+
+function handleNextKey(e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    document.removeEventListener("keydown", handleNextKey);
+    gameState.currentQuestion++;
+    saveState(gameState);
+    nextQuestion();
+  }
 }
 
 function checkAnswer() {
-  const input = document.querySelector('#answer');
+  const input = document.querySelector("#answer");
   const value = Number(input.value);
 
-  if (!value) {
-    return;
-  }
+  if (!value) return;
 
   const correct = gameState.currentPokemon.dex;
   const dex = correct;
@@ -233,7 +238,8 @@ function checkAnswer() {
   if (!gameState.stats[dex]) {
     gameState.stats[dex] = {
       correct: 0,
-      wrong: 0
+      wrong: 0,
+      total: 0,
     };
   }
 
@@ -245,45 +251,45 @@ function checkAnswer() {
   } else {
     gameState.stats[dex].wrong++;
   }
+  gameState.stats[dex].total++;
 
-  gameState.currentQuestion++;
+  showFloatingResult(isCorrect, () => {
+    app.innerHTML = renderQuiz(
+      gameState.currentPokemon,
+      gameState.currentQuestion,
+      gameState.totalQuestions,
+      true,
+      isCorrect,
+      value,
+    );
 
-  saveState(gameState);
+    document.querySelector("#next-question")?.addEventListener("click", () => {
+      gameState.currentQuestion++;
+      saveState(gameState);
+      nextQuestion();
+    });
 
-  showFloatingResult(isCorrect);
-
-  input.value = '';
-
-  const card = document.querySelector('.card');
-
-  card.classList.add('question-exit');
+    document.addEventListener("keydown", handleNextKey);
+  });
 }
 
-function showFloatingResult(isCorrect) {
-  const el = document.createElement('div');
+function showFloatingResult(isCorrect, callback) {
+  const el = document.createElement("div");
 
-  el.textContent = isCorrect
-    ? '¡Correcto!'
-    : '¡Incorrecto!';
+  el.textContent = isCorrect ? "¡Correcto!" : "¡Incorrecto!";
+  el.className = isCorrect ? "floating correct" : "floating wrong";
 
-  el.className = isCorrect
-    ? 'floating correct'
-    : 'floating wrong';
+  document.querySelector(".card").appendChild(el);
 
-  document.querySelector('.card').appendChild(el);
-
-  el.addEventListener('animationend', () => {
+  setTimeout(() => {
     el.remove();
-    nextQuestion();
-  });
+    if (callback) callback();
+  }, 1200);
 }
 
 function nextQuestion() {
   const selectedGens = gameState.selectedGenerations;
-
-  const available = pokemonList.filter(p =>
-    selectedGens.includes(p.gen)
-  );
+  const available = pokemonList.filter((p) => selectedGens.includes(p.gen));
 
   if (gameState.currentQuestion >= gameState.totalQuestions) {
     showResults();
@@ -292,26 +298,31 @@ function nextQuestion() {
 
   function getWeight(pokemon) {
     const stat = gameState.stats[pokemon.dex];
-
     if (!stat) return 1;
-
-    return 1 + (stat.wrong * 2) - stat.correct;
+    return 1 + stat.wrong * 2 - stat.correct;
   }
 
   const pool = [];
-
-  available.forEach(p => {
+  available.forEach((p) => {
     const weight = Math.max(1, getWeight(p));
-
     for (let i = 0; i < weight; i++) {
       pool.push(p);
     }
   });
 
-  const randomPokemon =
-    pool[Math.floor(Math.random() * pool.length)];
+  let randomPokemon;
+  do {
+    randomPokemon = pool[Math.floor(Math.random() * pool.length)];
+  } while (
+    gameState.usedPokemon?.includes(randomPokemon.dex) &&
+    gameState.usedPokemon.length < available.length
+  );
 
-  app.classList.add('fade-out');
+  // Track usado
+  if (!gameState.usedPokemon) gameState.usedPokemon = [];
+  gameState.usedPokemon.push(randomPokemon.dex);
+
+  app.classList.add("fade-out");
 
   setTimeout(() => {
     gameState.currentPokemon = randomPokemon;
@@ -319,31 +330,31 @@ function nextQuestion() {
     app.innerHTML = renderQuiz(
       gameState.currentPokemon,
       gameState.currentQuestion,
-      gameState.totalQuestions
+      gameState.totalQuestions,
     );
-    const card = document.querySelector('.card');
 
-    card.classList.add('question-enter');
-
-    requestAnimationFrame(() => {
-      card.classList.remove('question-enter');
-    });
-
-    document
-      .querySelector('#check-answer')
-      .addEventListener('click', checkAnswer);
-    document
-      .querySelector('#answer')
-      .addEventListener('keydown', e => {
-        if (e.key === 'Enter') {
-          checkAnswer();
-        }
+    const card = document.querySelector(".card");
+    if (card) {
+      card.classList.add("question-enter");
+      requestAnimationFrame(() => {
+        card.classList.remove("question-enter");
       });
-    document.querySelector('#answer').focus();
+    }
+
+    const answerInput = document.querySelector("#answer");
+    if (answerInput) {
+      answerInput.focus();
+      answerInput.addEventListener("keydown", handleEnterKey);
+    }
+
+    document
+      .querySelector("#check-answer")
+      ?.addEventListener("click", checkAnswer);
+
     requestAnimationFrame(() => {
-      app.classList.remove('fade-out');
+      app.classList.remove("fade-out");
     });
-  }, 50);
+  }, 300);
 }
 
 function showResults() {
@@ -367,7 +378,17 @@ function init() {
 
   renderView();
 }
+
 init();
-if (typeof navigator.serviceWorker !== 'undefined') {
-    navigator.serviceWorker.register('sw.js')
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(registration => {
+        console.log('Service Worker registrado con éxito:', registration.scope);
+      })
+      .catch(error => {
+        console.error('Error al registrar el Service Worker:', error);
+      });
+  });
 }
