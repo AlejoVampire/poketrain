@@ -196,6 +196,8 @@ function startGame() {
     gameState.currentPokemon,
     gameState.currentQuestion,
     gameState.totalQuestions,
+    false,
+    null,
   );
 
   const answerInput = document.querySelector("#answer");
@@ -207,22 +209,22 @@ function startGame() {
   document
     .querySelector("#check-answer")
     ?.addEventListener("click", checkAnswer);
+
+  saveState(gameState);
+  console.log("Game started:", gameState);
 }
 
-function handleEnterKey(e) {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    checkAnswer();
-  }
+function handleNextQuestion() {
+  document.removeEventListener("keydown", handleEnterToContinue);
+  gameState.currentQuestion++;
+  saveState(gameState);
+  nextQuestion();
 }
 
-function handleNextKey(e) {
+function handleEnterToContinue(e) {
   if (e.key === "Enter") {
     e.preventDefault();
-    document.removeEventListener("keydown", handleNextKey);
-    gameState.currentQuestion++;
-    saveState(gameState);
-    nextQuestion();
+    handleNextQuestion();
   }
 }
 
@@ -260,26 +262,24 @@ function checkAnswer() {
       gameState.totalQuestions,
       true,
       isCorrect,
-      value,
     );
 
-    document.querySelector("#next-question")?.addEventListener("click", () => {
-      gameState.currentQuestion++;
-      saveState(gameState);
-      nextQuestion();
-    });
+    document
+      .querySelector("#next-question")
+      ?.addEventListener("click", handleNextQuestion);
 
-    document.addEventListener("keydown", handleNextKey);
+    document.addEventListener("keydown", handleEnterToContinue);
   });
 }
 
 function showFloatingResult(isCorrect, callback) {
+  const card = document.querySelector(".card");
   const el = document.createElement("div");
 
   el.textContent = isCorrect ? "¡Correcto!" : "¡Incorrecto!";
   el.className = isCorrect ? "floating correct" : "floating wrong";
 
-  document.querySelector(".card").appendChild(el);
+  card.appendChild(el);
 
   setTimeout(() => {
     el.remove();
@@ -318,43 +318,44 @@ function nextQuestion() {
     gameState.usedPokemon.length < available.length
   );
 
-  // Track usado
   if (!gameState.usedPokemon) gameState.usedPokemon = [];
   gameState.usedPokemon.push(randomPokemon.dex);
 
-  app.classList.add("fade-out");
+  gameState.currentPokemon = randomPokemon;
+  saveState(gameState);
 
-  setTimeout(() => {
-    gameState.currentPokemon = randomPokemon;
+  app.innerHTML = renderQuiz(
+    gameState.currentPokemon,
+    gameState.currentQuestion,
+    gameState.totalQuestions,
+    false,
+    null,
+  );
 
-    app.innerHTML = renderQuiz(
-      gameState.currentPokemon,
-      gameState.currentQuestion,
-      gameState.totalQuestions,
-    );
-
-    const card = document.querySelector(".card");
-    if (card) {
-      card.classList.add("question-enter");
-      requestAnimationFrame(() => {
-        card.classList.remove("question-enter");
-      });
-    }
-
-    const answerInput = document.querySelector("#answer");
-    if (answerInput) {
-      answerInput.focus();
-      answerInput.addEventListener("keydown", handleEnterKey);
-    }
-
-    document
-      .querySelector("#check-answer")
-      ?.addEventListener("click", checkAnswer);
-
+  const card = document.querySelector(".card");
+  if (card) {
+    card.classList.add("question-enter");
     requestAnimationFrame(() => {
-      app.classList.remove("fade-out");
+      card.classList.remove("question-enter");
     });
-  }, 300);
+  }
+
+  const answerInput = document.querySelector("#answer");
+  if (answerInput) {
+    answerInput.focus();
+    answerInput.addEventListener("keydown", handleEnterKey);
+  }
+
+  document
+    .querySelector("#check-answer")
+    ?.addEventListener("click", checkAnswer);
+}
+
+function handleEnterKey(e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    checkAnswer();
+  }
 }
 
 function showResults() {
@@ -381,14 +382,15 @@ function init() {
 
 init();
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then(registration => {
-        console.log('Service Worker registrado con éxito:', registration.scope);
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("./sw.js")
+      .then((registration) => {
+        console.log("Service Worker registrado con éxito:", registration.scope);
       })
-      .catch(error => {
-        console.error('Error al registrar el Service Worker:', error);
+      .catch((error) => {
+        console.error("Error al registrar el Service Worker:", error);
       });
   });
 }
