@@ -82,21 +82,25 @@ function renderStats() {
     if (!generationStats[gen]) {
       generationStats[gen] = {
         correct: 0,
+        wrong: 0,
         total: 0,
       };
     }
 
-    generationStats[gen].correct += s.correct;
-    generationStats[gen].total += s.correct + s.wrong;
+    generationStats[gen].correct += s.correct || 0;
+    generationStats[gen].wrong += s.wrong || 0;
+    generationStats[gen].total += (s.correct || 0) + (s.wrong || 0);
   });
 
   const generationHtml = Object.entries(generationStats)
     .map(([gen, data]) => {
-      const accuracy = Math.round((data.correct / data.total) * 100);
+      const accuracy =
+        data.total > 0 ? Math.round((data.correct / data.total) * 100) : 0;
 
       return `
       <div>
-        Gen ${gen}: ${accuracy}%
+        <strong>Gen ${gen}:</strong> ${accuracy}% 
+        <small>(${data.correct}/${data.total})</small>
       </div>
     `;
     })
