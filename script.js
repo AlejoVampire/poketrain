@@ -304,8 +304,6 @@ function showResultScreen(isCorrect) {
         #${String(pokemon.dex).padStart(4, "0")}
       </div>
 
-      <h1 class="quiz-title">¿Qué número es?</h1>
-
       <img src="sprites/${String(pokemon.dex).padStart(4, "0")}.png" alt="Pokémon" />
 
       <button id="next-question">
