@@ -192,18 +192,47 @@ function startGame() {
   const randomIndex = Math.floor(Math.random() * available.length);
   gameState.currentPokemon = available[randomIndex];
 
-  app.innerHTML = renderQuiz(
-    gameState.currentPokemon,
-    gameState.currentQuestion,
-    gameState.totalQuestions,
-    false,
-    null,
-  );
+  app.innerHTML = `
+    <div class="card">
+      <div class="progress-info">
+        Pregunta ${gameState.currentQuestion + 1} / ${gameState.totalQuestions}
+      </div>
+      
+      <div class="progress-bar">
+        <div
+          class="progress-fill"
+          style="width: 0%"
+        ></div>
+      </div>
+
+      <div class="dex-number"></div>
+
+      <h1 class="quiz-title">¿Qué número es?</h1>
+
+      <img src="sprites/${String(gameState.currentPokemon.dex).padStart(4, "0")}.png" alt="Pokémon" />
+
+      <input
+        id="answer"
+        type="number"
+        placeholder="Pokédex #"
+        autofocus
+      >
+
+      <button id="check-answer">
+        Comprobar
+      </button>
+    </div>
+  `;
 
   const answerInput = document.querySelector("#answer");
   if (answerInput) {
     answerInput.focus();
-    answerInput.addEventListener("keydown", handleEnterKey);
+    answerInput.addEventListener("keydown", function handleEnter(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        checkAnswer();
+      }
+    });
   }
 
   document
@@ -212,20 +241,6 @@ function startGame() {
 
   saveState(gameState);
   console.log("Game started:", gameState);
-}
-
-function handleNextQuestion() {
-  document.removeEventListener("keydown", handleEnterToContinue);
-  gameState.currentQuestion++;
-  saveState(gameState);
-  nextQuestion();
-}
-
-function handleEnterToContinue(e) {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    handleNextQuestion();
-  }
 }
 
 function checkAnswer() {
@@ -255,36 +270,65 @@ function checkAnswer() {
   }
   gameState.stats[dex].total++;
 
-  showFloatingResult(isCorrect, () => {
-    app.innerHTML = renderQuiz(
-      gameState.currentPokemon,
-      gameState.currentQuestion,
-      gameState.totalQuestions,
-      true,
-      isCorrect,
-    );
-
-    document
-      .querySelector("#next-question")
-      ?.addEventListener("click", handleNextQuestion);
-
-    document.addEventListener("keydown", handleEnterToContinue);
-  });
-}
-
-function showFloatingResult(isCorrect, callback) {
   const card = document.querySelector(".card");
-  const el = document.createElement("div");
+  const floatingEl = document.createElement("div");
 
-  el.textContent = isCorrect ? "¡Correcto!" : "¡Incorrecto!";
-  el.className = isCorrect ? "floating correct" : "floating wrong";
+  floatingEl.textContent = isCorrect ? "¡Correcto!" : "¡Incorrecto!";
+  floatingEl.className = isCorrect ? "floating correct" : "floating wrong";
 
-  card.appendChild(el);
+  card.appendChild(floatingEl);
 
   setTimeout(() => {
-    el.remove();
-    if (callback) callback();
+    floatingEl.remove();
+    showResultScreen(isCorrect);
   }, 1200);
+}
+
+function showResultScreen(isCorrect) {
+  const pokemon = gameState.currentPokemon;
+
+  app.innerHTML = `
+    <div class="card">
+      <div class="progress-info">
+        Pregunta ${gameState.currentQuestion + 1} / ${gameState.totalQuestions}
+      </div>
+      
+      <div class="progress-bar">
+        <div
+          class="progress-fill"
+          style="width:${(gameState.currentQuestion / gameState.totalQuestions) * 100}%"
+        ></div>
+      </div>
+
+      <div class="dex-number ${isCorrect ? "correct" : "incorrect"}">
+        #${String(pokemon.dex).padStart(4, "0")}
+      </div>
+
+      <h1 class="quiz-title">¿Qué número es?</h1>
+
+      <img src="sprites/${String(pokemon.dex).padStart(4, "0")}.png" alt="Pokémon" />
+
+      <button id="next-question">
+        ${gameState.currentQuestion + 1 >= gameState.totalQuestions ? "Ver resultados" : "Siguiente"}
+      </button>
+    </div>
+  `;
+
+  document.querySelector("#next-question").addEventListener("click", () => {
+    gameState.currentQuestion++;
+    saveState(gameState);
+    nextQuestion();
+  });
+
+  document.addEventListener("keydown", function handleEnter(e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      document.removeEventListener("keydown", handleEnter);
+      gameState.currentQuestion++;
+      saveState(gameState);
+      nextQuestion();
+    }
+  });
 }
 
 function nextQuestion() {
@@ -324,17 +368,40 @@ function nextQuestion() {
   gameState.currentPokemon = randomPokemon;
   saveState(gameState);
 
-  app.innerHTML = renderQuiz(
-    gameState.currentPokemon,
-    gameState.currentQuestion,
-    gameState.totalQuestions,
-    false,
-    null,
-  );
+  app.innerHTML = `
+    <div class="card question-enter">
+      <div class="progress-info">
+        Pregunta ${gameState.currentQuestion + 1} / ${gameState.totalQuestions}
+      </div>
+      
+      <div class="progress-bar">
+        <div
+          class="progress-fill"
+          style="width:${(gameState.currentQuestion / gameState.totalQuestions) * 100}%"
+        ></div>
+      </div>
+
+      <div class="dex-number"></div>
+
+      <h1 class="quiz-title">¿Qué número es?</h1>
+
+      <img src="sprites/${String(randomPokemon.dex).padStart(4, "0")}.png" alt="Pokémon" />
+
+      <input
+        id="answer"
+        type="number"
+        placeholder="Pokédex #"
+        autofocus
+      >
+
+      <button id="check-answer">
+        Comprobar
+      </button>
+    </div>
+  `;
 
   const card = document.querySelector(".card");
   if (card) {
-    card.classList.add("question-enter");
     requestAnimationFrame(() => {
       card.classList.remove("question-enter");
     });
@@ -343,19 +410,17 @@ function nextQuestion() {
   const answerInput = document.querySelector("#answer");
   if (answerInput) {
     answerInput.focus();
-    answerInput.addEventListener("keydown", handleEnterKey);
+    answerInput.addEventListener("keydown", function handleEnter(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        checkAnswer();
+      }
+    });
   }
 
   document
     .querySelector("#check-answer")
     ?.addEventListener("click", checkAnswer);
-}
-
-function handleEnterKey(e) {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    checkAnswer();
-  }
 }
 
 function showResults() {
